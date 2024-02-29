@@ -1,0 +1,6 @@
+\#recycle
+isos/*
+mounts/*
+!*/.keep
+
+*token*
