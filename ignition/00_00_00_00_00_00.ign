@@ -16,47 +16,47 @@
       {
         "path": "/var/home/systemUser/create_tpm_0x8101FFFF.sh",
         "mode": 493,
-        "contents": { "source": "http://10.0.0.100/scripts/create_tpm_0x8101FFFF.sh" }
+        "contents": { "source": "http://10.0.0.100:9876/scripts/create_tpm_0x8101FFFF.sh" }
       },
       {
         "path": "/var/home/systemUser/remove_tpm_0x8101FFFF.sh",
         "mode": 493,
-        "contents": { "source": "http://10.0.0.100/scripts/remove_tpm_0x8101FFFF.sh" }
+        "contents": { "source": "http://10.0.0.100:9876/scripts/remove_tpm_0x8101FFFF.sh" }
       },
       {
         "path": "/var/home/systemUser/decrypt_with_tpm_0x8101FFFF.sh",
         "mode": 493,
-        "contents": { "source": "http://10.0.0.100/scripts/decrypt_with_tpm_0x8101FFFF.sh" }
+        "contents": { "source": "http://10.0.0.100:9876/scripts/decrypt_with_tpm_0x8101FFFF.sh" }
       },
       {
         "path": "/var/home/systemUser/encrypt_with_tpm_0x8101FFFF.sh",
         "mode": 493,
-        "contents": { "source": "http://10.0.0.100/scripts/encrypt_with_tpm_0x8101FFFF.sh" }
+        "contents": { "source": "http://10.0.0.100:9876/scripts/encrypt_with_tpm_0x8101FFFF.sh" }
       },
       {
         "path": "/var/home/systemUser/unattended_decryption.sh",
         "mode": 493,
-        "contents": { "source": "http://10.0.0.100/scripts/unattended_decryption.sh" }
+        "contents": { "source": "http://10.0.0.100:9876/scripts/unattended_decryption.sh" }
       },
       {
         "path": "/usr/local/bin/tfcagent_service.sh",
         "mode": 493,
-        "contents": { "source": "http://10.0.0.100/scripts/tfcagent_service.sh" }
+        "contents": { "source": "http://10.0.0.100:9876/scripts/tfcagent_service.sh" }
       },
       {
         "path": "/usr/local/bin/ghaction_service.sh",
         "mode": 493,
-        "contents": { "source": "http://10.0.0.100/scripts/ghaction_service.sh" }
+        "contents": { "source": "http://10.0.0.100:9876/scripts/ghaction_service.sh" }
       },
       {
         "path": "/var/home/systemUser/encrypted_tfcagent_token.txt",
         "mode": 493,
-        "contents": { "source": "http://10.0.0.100/ignition/data/00_00_00_00_00_00/encrypted_tfcagent_token.txt" }
+        "contents": { "source": "http://10.0.0.100:9876/ignition/data/00_00_00_00_00_00/encrypted_tfcagent_token.txt" }
       },
       {
         "path": "/var/home/systemUser/encrypted_ghaction_token.txt",
         "mode": 493,
-        "contents": { "source": "http://10.0.0.100/ignition/data/00_00_00_00_00_00/encrypted_ghaction_token.txt" }
+        "contents": { "source": "http://10.0.0.100:9876/ignition/data/00_00_00_00_00_00/encrypted_ghaction_token.txt" }
       }
     ]
   },
