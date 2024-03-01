@@ -204,15 +204,46 @@ If this is your first time preparing a machine, you will need to update the [/ig
     - In the provided grub config, an entry exists called `Fedora CoreOS 39 with TPM Scripts`
     - Update the `ignition.config.url=http://10.0.0.100:9876/ignition/_default.ign` line to match the IP and port from the HTTP setup step
 
- To prepare a machine for use, a few steps must be taken:
+Now, to prepare the machine itself for use, a few steps must be taken:
 
-1. PXE Boot the machine to the FCOS TPM Scripts option
+1. PXE Boot the machine to the `Fedora CoreOS 39 with TPM Scripts` option
     - Ensure you have UEFI IPv4 PXE Booting + SecureBoot enabled
-    
+    - Set PXE to the default boot method
+    - Boot the machine, and you should see the Netboot file download (shim.efi)
+      
+      ![Machine DCHP Screen](/docs/machine-dhcp-screen.png)
+
+    - Grub will then load and display the `Fedora CoreOS 39 with TPM Scripts`
+
+      ![Machine Grub Screen](/docs/machine-grub-screen.png)
+
+    - Either press enter on this value or wait for the countdown to run out
+    - The kernel and initrd will download (this takes ~2 minutes on my network)
+
+      ![Machine Kernel Initrd Screen](/docs/machine-kernel-initrd-screen.png)
+
+    - Finally, the OS will boot and ignition will run. A login prompt will be displayed when the process is complete
+
+      ![Machine Booted Screen](/docs/machine-booted-screen.png)
+1. SSH into the machine
+    - To make this process easier, create a file on your machine: `~/.ssh/config`
+    - config:
+      ```
+      Host fcos
+          HostName 10.0.1.42
+          User systemUser
+          IdentityFile ~/.ssh/id_ed25519_fcos
+      ```
+    - Replace the HostName with the IP of your machine
+    - Point the IdentityFile to the private key file
+    - To log in: `ssh fcos`
+    - Accept the fingerprint, and enter the password of your private key if applicable
+      ![Machine SSH Screen](/docs/machine-ssh-screen.png)
+
 1. Create a TPM "persistent handle"
     - This is the TPM term for a private-key pair that persists across reboots
     - Unfortunately, these keys are referenced via hex value between 0x81000000 - 0x817FFFFF, not by name
-    - In my research, I did not find a definitive guide for how to choose a handle value; rather, the suggestion was to just choose one that was not taken by the system. It seems that Windows uses the lower range, so I picked an easy value to remember higher in the range. Hard coding this is certainly not ideal, but for bare-metal machines with a single purpose it won't pose an issue. I would certainly not suggest messing with the TPM on a machine that has an active OS installed, however. **Use at your own risk.**
+    - In my research, I did not find a definitive guide for how to choose a handle value; rather, the suggestion was to just choose one that was not taken by the system. It seems that Windows uses the lower range, so I picked an easy value to remember higher in the range (`0x8101FFFF`). Hard coding this is certainly not ideal, but for bare-metal machines with a single purpose it won't pose an issue. I would certainly not suggest messing with the TPM on a machine that has an active OS installed, however. **Proceed at your own risk.**
     - With those details out of the way, we can create the handle. The scripts are placed in the home directory of the systemUser.
     - `sudo ./create_tpm_0x8101FFFF.sh`
     - Success looks like this, preceded by details about the key:
