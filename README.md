@@ -266,13 +266,28 @@ Now, to prepare the machine itself for use, a few steps must be taken:
         - Examples:
         - `/data/00_00_00_00_00_00/encrypted_ghaction_token.txt`
 
-            Contents:
+            To register a github actions runner, you'll need to create a fine-grained PAT token on your organization with Read and Write access to organization self hosted runners.
+
+            You will also need to create a self-hosted runner group in the github UI if one does not already exist.
+
+            Example encrypted contents:
             ```
             gw0xdb35GXjgiF9eVCNYGxxFdZzmNvY7m4TE519CGU0Dt7B3/RvTRsMgXyE83NLtspDjInqZQy04QfZVZwiS4V9oOkzI7McjahlUExYPmjI+DsgARm/rhA2gpeqz+BiTeuHM5ASDF7823648opXK/VueHTENiaxa+TeII615YHUmPfD5mi1GWcnpcTQhKa3K9CfrHO2e+ai2dZZdnjFrWp9dmy001amB+TZT5/aCvXr4OfGp6mMsH5z3kSYxcOLR9YLwRcvX5K/caNEnbA7wMFDu/qeYI234/BKJLHKLJHJKjrICz/ob/FXyYfxy39mOb+ocYsz/cj4Z09A==
             ```
+        - `/data/00_00_00_00_00_00/github_token_organization.txt`
+
+            You will also need to make a file with the name of your github organization. I've chosen not to encrypt this, as it's publicly available information. The filename, however, will still be excluded from commits in the .gitignore file. The ghaction script expects to receive this file unencrypted.
+
+            Example contents:
+            ```
+            cuenot-io
+            ```
+
         - `/data/00_00_00_00_00_00/encrypted_tfcagent_token.txt`
 
-            Contents:
+            For Terraform Cloud, you'll need to register a self-hosted organization agent and copy the provided key.
+
+            Example encrypted contents:
             ```
             gOzMBfSpMvb5F6o6y9OU1qyZaYyS4aOfRa3cRR8/E5wJPL12kuTNZrQqoh+BphgMw4tV82153685146a1asdfajhsdfjkNkrepDIPzDCezBar2h9uusnHMLajV3LmZ5emBhL1r4CcKdPSkRpfjtuR3eeltA+eXoEdfte3cdNq9Xk6GAv8/hvJpXpiajuhsdikjuhr234/wliIs8WCyXcDE6svq/CLjtQ0skBQlVkJYSZ6ILrT62Al6kEPhv6x9O5MRoobEkJo8pVXgW0JawJAlpRlPuMwX2ZQyqYmKQnmJkNR1ydpdxXRQ5qpGlrXv7w==
             ```

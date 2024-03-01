@@ -57,6 +57,11 @@
         "path": "/var/home/systemUser/encrypted_ghaction_token.txt",
         "mode": 493,
         "contents": { "source": "http://10.0.0.100:9876/ignition/data/00_00_00_00_00_00/encrypted_ghaction_token.txt" }
+      },
+      {
+        "path": "/var/home/systemUser/github_token_organization.txt",
+        "mode": 493,
+        "contents": { "source": "http://10.0.0.100:9876/ignition/data/00_00_00_00_00_00/github_token_organization.txt" }
       }
     ]
   },
