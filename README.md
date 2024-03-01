@@ -8,12 +8,7 @@
  - [HTTP](#http)
  - [DHCP](#dhcp)
  - [Machine Prep](#machine-prep)
-     * [Process](#process)
-     * [Examples](#examples)
-     * [Notes](#notes)
-     * [Troubleshooting](#troubleshooting)
-<!--         + [Problem: `Persistent handle 0x8101FFFF already exists.`](#problem-persistent-handle-0x8101ffff-already-exists)
-         + [Problem: TPM is locked](#problem-tpm-is-locked) -->
+ - [Conclusion](#conclusion)
 
 <!-- TOC end -->
 
@@ -125,7 +120,19 @@ Under `Control Panel -> File Services -> Advanced`, you'll need to designate thi
 
 ![Synology TFTP](/docs/synology-tftp.png)
 
-Once those settings are established, you'll need to set up HTTP file access to the same directory.
+Within the share, you'll then need to mount an ISO to boot. Start by creating a folder under `/mounts`; for this example, we'll call the folder `fcos-39`.
+
+Navigate to `/isos`, and upload your ISO if you haven't already.
+
+Right-click on the ISO, and select `Mount Virtual Drive`.
+
+![Synology Mount Virtual Drive](/docs/synology-iso-mount-virtual-drive.png)
+
+Browse to the `/mounts/fcos-39` folder and select the `Mount automatically on startup` checkbox.
+
+![Synology Mount Folder](/docs/synology-iso-mounts-folder.png)
+
+At this point, the TFTP setup is complete. For ignition to work, you'll need to set up HTTP file access to the same share.
 
 <!-- TOC --><a name="http"></a>
 ## HTTP
@@ -246,9 +253,9 @@ Now, to prepare the machine itself for use, a few steps must be taken:
     - In my research, I did not find a definitive guide for how to choose a handle value; rather, the suggestion was to just choose one that was not taken by the system. It seems that Windows uses the lower range, so I picked an easy value to remember higher in the range (`0x8101FFFF`). Hard coding this is certainly not ideal, but for bare-metal machines with a single purpose it won't pose an issue. I would certainly not suggest messing with the TPM on a machine that has an active OS installed, however. **Proceed at your own risk.**
     - With those details out of the way, we can create the handle. The scripts are placed in the home directory of the systemUser.
     - `sudo ./create_tpm_0x8101FFFF.sh`
-    - Success looks like this, preceded by details about the key:
+    - A success message will display, preceded by details about the key:
     - `Persistent handle 0x8101FFFF created successfully.`
-1. Encrypt your API keys
+1. Encrypt the API keys
     - Execute the encryption script once for each key you want to encrypt
     - `sudo ./encrypt_with_tpm_0x8101FFFF.sh`
     - Paste your API key
@@ -256,28 +263,54 @@ Now, to prepare the machine itself for use, a few steps must be taken:
 1. Save your encrypted key
     - In `/data`, make a folder for the mac of your machine's NIC, with underscores instead of colons
     - Inside of that folder, create the corresponding files for your keys
-    - The `00_00_00_00_00_00` folder exists solely for reference
+        - Examples:
+        - `/data/00_00_00_00_00_00/encrypted_ghaction_token.txt`
 
-<!-- TOC --><a name="examples"></a>
-### Examples
-The TPM encrypted keys for GitHub Actions and Terraform Cloud
-would similar to the following:
+            Contents:
+            ```
+            gw0xdb35GXjgiF9eVCNYGxxFdZzmNvY7m4TE519CGU0Dt7B3/RvTRsMgXyE83NLtspDjInqZQy04QfZVZwiS4V9oOkzI7McjahlUExYPmjI+DsgARm/rhA2gpeqz+BiTeuHM5ASDF7823648opXK/VueHTENiaxa+TeII615YHUmPfD5mi1GWcnpcTQhKa3K9CfrHO2e+ai2dZZdnjFrWp9dmy001amB+TZT5/aCvXr4OfGp6mMsH5z3kSYxcOLR9YLwRcvX5K/caNEnbA7wMFDu/qeYI234/BKJLHKLJHJKjrICz/ob/FXyYfxy39mOb+ocYsz/cj4Z09A==
+            ```
+        - `/data/00_00_00_00_00_00/encrypted_tfcagent_token.txt`
 
-**encrypted_ghaction_token.txt**
-```
-gw0xdb35GXjgiF9eVCNYGxxFdZzmNvY7m4TE519CGU0Dt7B3/RvTRsMgXyE83NLtspDjInqZQy04QfZVZwiS4V9oOkzI7McjahlUExYPmjI+DsgARm/rhA2gpeqz+BiTeuHM5ASDF7823648opXK/VueHTENiaxa+TeII615YHUmPfD5mi1GWcnpcTQhKa3K9CfrHO2e+ai2dZZdnjFrWp9dmy001amB+TZT5/aCvXr4OfGp6mMsH5z3kSYxcOLR9YLwRcvX5K/caNEnbA7wMFDu/qeYI234/BKJLHKLJHJKjrICz/ob/FXyYfxy39mOb+ocYsz/cj4Z09A==
-```
+            Contents:
+            ```
+            gOzMBfSpMvb5F6o6y9OU1qyZaYyS4aOfRa3cRR8/E5wJPL12kuTNZrQqoh+BphgMw4tV82153685146a1asdfajhsdfjkNkrepDIPzDCezBar2h9uusnHMLajV3LmZ5emBhL1r4CcKdPSkRpfjtuR3eeltA+eXoEdfte3cdNq9Xk6GAv8/hvJpXpiajuhsdikjuhr234/wliIs8WCyXcDE6svq/CLjtQ0skBQlVkJYSZ6ILrT62Al6kEPhv6x9O5MRoobEkJo8pVXgW0JawJAlpRlPuMwX2ZQyqYmKQnmJkNR1ydpdxXRQ5qpGlrXv7w==
+            ```
+    - The `00_00_00_00_00_00` folder exists solely as an example
+    - The base64 encoded key resides on a single line, but may appear to wrap in your text editor.
+    - Any filenames containing the string "token" are excluded from the repo via .gitignore.
 
-**encrypted_tfcagent_token.txt**
-```
-gOzMBfSpMvb5F6o6y9OU1qyZaYyS4aOfRa3cRR8/E5wJPL12kuTNZrQqoh+BphgMw4tV82153685146a1asdfajhsdfjkNkrepDIPzDCezBar2h9uusnHMLajV3LmZ5emBhL1r4CcKdPSkRpfjtuR3eeltA+eXoEdfte3cdNq9Xk6GAv8/hvJpXpiajuhsdikjuhr234/wliIs8WCyXcDE6svq/CLjtQ0skBQlVkJYSZ6ILrT62Al6kEPhv6x9O5MRoobEkJo8pVXgW0JawJAlpRlPuMwX2ZQyqYmKQnmJkNR1ydpdxXRQ5qpGlrXv7w==
-```
+1. Create an ignition file for the machine
+    - Copy `/igntion/00_00_00_00_00_00.ign` and update the name to match the mac, as you did with the folder in `/data`
+    - As you did with `_default.ign`, replace the sshAuthorizedKeys entry and update the IP address and port for each file reference
+    - You will also need to update the references to the encrypted tokens, pointing to the mac address folder and key name underneath that folder that you created in the previous step
+    - The `systemd` section specifies the services that start once the machine has booted. If you are running a GitHub Actions agent and Terraform Cloud Agent as this guide shows, no modifications will need to be made. Otherwise, you will need to adjust these sections to meet your use case.
+    - These entries each wait a few seconds for the machine to initialize, and then launch a shell script that decrypts the provided keys and starts a podman container with the key provided as an environment variable.
 
-<!-- TOC --><a name="notes"></a>
-### Notes
-The base64 encoded key resides on a single line, but may appear to wrap in your text editor.
+1. Create a grub entry for the machine
+    - Update or duplicate the mac-specific entry in `grub.cfg`
+        ```
+        # Check for specific MAC address
+        if [ "$net_default_mac" = "00:00:00:00:00:00" ]; then
+            menuentry 'Terraform + GitHub Actions Agents (Fedora CoreOS 39)' --class fedora --class gnu-linux --class gnu --class os {
 
-Any filenames containing the string "token" are excluded from the repo via .gitignore.
+                echo 'Loading Fedora CoreOS kernel...'
+                linuxefi mounts/fcos-39/images/pxeboot/vmlinuz \
+                        ignition.firstboot                         \
+                        ignition.platform.id=metal                 \
+                        ignition.config.url=http://10.0.0.100:9876/ignition/00_00_00_00_00_00.ign
+
+                echo 'Loading Fedora CoreOS initial ramdisk...'
+                initrdefi mounts/fcos-39/images/pxeboot/initrd.img \
+                        mounts/fcos-39/images/pxeboot/rootfs.img
+
+                echo 'Booting Fedora CoreOS...'
+            }
+        fi
+        ```
+    - This entry should be located above the `Fedora CoreOS 39 with TPM Scripts` entry, to make this the first option in the boot order
+    - Set the `"$net_default_mac" = "00:00:00:00:00:00"` line to your mac address
+    - Set the `ignition.config.url=http://10.0.0.100:9876/ignition/00_00_00_00_00_00.ign` line to match the IP, port, and path of the ignition file you created in the previous step
 
 <!-- TOC --><a name="troubleshooting"></a>
 ### Troubleshooting
@@ -293,3 +326,22 @@ If this occurs on your first run, then something else is already using that hand
 If you receive messages about your TPM being locked, this can mean one of a few things:
 1. You've locked yourself out of the TPM. TPMs have an inherent security feature that prevents dictionary attacks, and will lock for a period of time if non-root users try to execute commands against them. If you forget to run the scripts as `sudo`, you'll hit this. You can either wait for the timeout to lapse, or run `sudo tpm2_dictionarylockout -c` to free the lock.
 1. Your TPM has a password set. If this is the case, you'll need to remove the TPM password in your BIOS. **Proceed at your own risk**.
+
+<!-- TOC --><a name="conclusion"></a>
+## Conclusion
+
+Assuming the machine prep has been completed properly, a reboot should list the new grub entry
+
+![Machine Grub Screen with Mac-specific Entry](/docs/machine-grub-screen-mac-specific.png)
+
+Boot the new entry, and cross your fingers 🤞
+
+If all goes well, the machine will boot, download the scripts and keys, and start the services!
+
+You can start, stop, and inspect these services to troubleshoot:
+ - `sudo systemctl start tfcagent.service`
+ - `sudo systemctl stop tfcagent.service`
+ - `sudo journalctl -u tfcagent.service`
+
+The systemd logs may not provide sufficient information for troubleshooting. You can also run the scripts directly to get more information:
+ - `sudo /usr/local/bin/tfcagent_service.sh`
